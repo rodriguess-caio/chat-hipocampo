@@ -67,15 +67,36 @@ export const runHipocampusAgent = async (messageData, userId) => {
 };
 
 // Função para continuar conversa com session_id
-export const continueConversation = async (sessionId, messageContent, userId) => {
+export const continueConversation = async (sessionId, messageContent, userId, mediaContents = null) => {
+  const payload = {
+    message_content: messageContent,
+    session_name: sessionId,
+    message_type: 'text',
+    user_id: userId,
+  };
+
+  // Adiciona media_contents se fornecido
+  if (mediaContents && mediaContents.length > 0) {
+    payload.media_contents = mediaContents;
+  }
+
   return apiRequest('/agent/hippocampus/run', {
     method: 'POST',
-    body: JSON.stringify({
-      message_content: messageContent,
-      session_name: sessionId,
-      message_type: 'text',
-      user_id: userId,
-    }),
+    body: JSON.stringify(payload),
   });
+};
+
+// Função para enviar mensagem com áudio
+export const sendMessageWithAudio = async (sessionId, messageContent, audioBlob, userId) => {
+  // Converte o blob de áudio para base64
+  const arrayBuffer = await audioBlob.arrayBuffer();
+  const base64Audio = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+  
+  const mediaContents = [{
+    mime_type: audioBlob.type,
+    data: `data:${audioBlob.type};base64,${base64Audio}`
+  }];
+
+  return continueConversation(sessionId, messageContent, userId, mediaContents);
 };
 
