@@ -6,6 +6,8 @@ import { ScrollArea } from '@/components/ui/scroll-area.jsx';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar.jsx';
 import { Send, Bot, User, Trash2, Loader2 } from 'lucide-react';
 import { useChat } from '../hooks/useChat';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export const ChatInterface = ({ user, onLogout }) => {
   const [inputMessage, setInputMessage] = useState('');
@@ -38,6 +40,75 @@ export const ChatInterface = ({ user, onLogout }) => {
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  // Componente para renderizar mensagens com markdown
+  const MessageContent = ({ content, sender }) => {
+    if (sender === 'user') {
+      // Para mensagens do usuário, mostra texto simples
+      return <p className="text-sm whitespace-pre-wrap">{content}</p>;
+    }
+
+    // Para mensagens do agente, renderiza markdown
+    return (
+      <div className="text-sm prose prose-sm max-w-none">
+        <ReactMarkdown 
+          remarkPlugins={[remarkGfm]}
+          components={{
+            // Estilização personalizada para elementos markdown
+            h1: ({ children }) => <h1 className="text-lg font-bold mb-2">{children}</h1>,
+            h2: ({ children }) => <h2 className="text-base font-bold mb-2">{children}</h2>,
+            h3: ({ children }) => <h3 className="text-sm font-bold mb-1">{children}</h3>,
+            p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+            ul: ({ children }) => <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>,
+            ol: ({ children }) => <ol className="list-decimal list-inside mb-2 space-y-1">{children}</ol>,
+            li: ({ children }) => <li className="text-sm">{children}</li>,
+            code: ({ children, className }) => {
+              const isInline = !className;
+              if (isInline) {
+                return <code className="bg-gray-100 px-1 py-0.5 rounded text-xs font-mono">{children}</code>;
+              }
+              return (
+                <pre className="bg-gray-100 p-2 rounded text-xs font-mono overflow-x-auto mb-2">
+                  <code>{children}</code>
+                </pre>
+              );
+            },
+            blockquote: ({ children }) => (
+              <blockquote className="border-l-4 border-gray-300 pl-3 italic text-gray-600 mb-2">
+                {children}
+              </blockquote>
+            ),
+            strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+            em: ({ children }) => <em className="italic">{children}</em>,
+            a: ({ children, href }) => (
+              <a href={href} className="text-blue-600 hover:text-blue-800 underline" target="_blank" rel="noopener noreferrer">
+                {children}
+              </a>
+            ),
+            table: ({ children }) => (
+              <div className="overflow-x-auto mb-2">
+                <table className="min-w-full border border-gray-300 text-xs">
+                  {children}
+                </table>
+              </div>
+            ),
+            th: ({ children }) => (
+              <th className="border border-gray-300 px-2 py-1 bg-gray-100 font-semibold">
+                {children}
+              </th>
+            ),
+            td: ({ children }) => (
+              <td className="border border-gray-300 px-2 py-1">
+                {children}
+              </td>
+            ),
+          }}
+        >
+          {content}
+        </ReactMarkdown>
+      </div>
+    );
   };
 
   return (
@@ -119,7 +190,7 @@ export const ChatInterface = ({ user, onLogout }) => {
                       : 'bg-white border border-gray-200'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  <MessageContent content={message.content} sender={message.sender} />
                   <p className={`text-xs mt-1 ${
                     message.sender === 'user' 
                       ? 'text-blue-100' 
