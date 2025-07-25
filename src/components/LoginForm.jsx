@@ -6,11 +6,19 @@ import { Label } from '@/components/ui/label.jsx';
 import { Alert, AlertDescription } from '@/components/ui/alert.jsx';
 import { Phone, LogIn, Loader2 } from 'lucide-react';
 import { getUserByPhone } from '@/lib/api.js';
+import { formatPhoneNumber, cleanPhoneNumber } from '@/lib/utils.js';
+import logo from '@/assets/logo.png';
 
 export const LoginForm = ({ onLogin, onSwitchToRegister }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const handlePhoneChange = (e) => {
+    const value = e.target.value;
+    const formatted = formatPhoneNumber(value);
+    setPhoneNumber(formatted);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,7 +33,7 @@ export const LoginForm = ({ onLogin, onSwitchToRegister }) => {
 
     try {
       // Remove caracteres não numéricos do telefone
-      const cleanPhone = phoneNumber.replace(/\D/g, '');
+      const cleanPhone = cleanPhoneNumber(phoneNumber);
       
       // Busca o usuário na API
       const userData = await getUserByPhone(cleanPhone);
@@ -62,6 +70,9 @@ export const LoginForm = ({ onLogin, onSwitchToRegister }) => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
+          <div className="flex justify-center mb-4">
+            <img src={logo} alt="Hipocampo Logo" className="h-16 w-auto" />
+          </div>
           <CardTitle className="text-2xl font-bold text-gray-900">
             Entrar no Hipocampo
           </CardTitle>
@@ -81,9 +92,10 @@ export const LoginForm = ({ onLogin, onSwitchToRegister }) => {
                 type="tel"
                 placeholder="(11) 99999-9999"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                onChange={handlePhoneChange}
                 className="w-full"
                 disabled={isLoading}
+                maxLength={15}
               />
             </div>
 

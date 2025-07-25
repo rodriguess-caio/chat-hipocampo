@@ -6,6 +6,8 @@ import { Label } from '@/components/ui/label.jsx';
 import { Alert, AlertDescription } from '@/components/ui/alert.jsx';
 import { Loader2, User, Phone } from 'lucide-react';
 import { createUser } from '../lib/api';
+import { formatPhoneNumber, cleanPhoneNumber } from '@/lib/utils.js';
+import logo from '@/assets/logo.png';
 
 export const UserRegistration = ({ onUserRegistered }) => {
   const [formData, setFormData] = useState({
@@ -17,10 +19,20 @@ export const UserRegistration = ({ onUserRegistered }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    if (name === 'phone_number') {
+      // Aplica máscara apenas para o campo de telefone
+      const formatted = formatPhoneNumber(value);
+      setFormData(prev => ({
+        ...prev,
+        [name]: formatted
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -35,8 +47,11 @@ export const UserRegistration = ({ onUserRegistered }) => {
     setError(null);
 
     try {
+      // Remove caracteres não numéricos do telefone antes de enviar
+      const cleanPhone = cleanPhoneNumber(formData.phone_number);
+      
       const userData = {
-        phone_number: formData.phone_number,
+        phone_number: cleanPhone,
         user_data: {
           name: formData.name
         }
@@ -48,13 +63,13 @@ export const UserRegistration = ({ onUserRegistered }) => {
       localStorage.setItem('hipocampo_user', JSON.stringify({
         id: response.id,
         name: formData.name,
-        phone_number: formData.phone_number
+        phone_number: cleanPhone
       }));
 
       onUserRegistered({
         id: response.id,
         name: formData.name,
-        phone_number: formData.phone_number
+        phone_number: cleanPhone
       });
 
     } catch (err) {
@@ -69,6 +84,9 @@ export const UserRegistration = ({ onUserRegistered }) => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
+          <div className="flex justify-center mb-4">
+            <img src={logo} alt="Hipocampo Logo" className="h-16 w-auto" />
+          </div>
           <CardTitle className="text-2xl font-bold text-gray-900">
             Bem-vindo ao Hipocampo
           </CardTitle>
@@ -109,6 +127,7 @@ export const UserRegistration = ({ onUserRegistered }) => {
                 onChange={handleInputChange}
                 disabled={isLoading}
                 className="w-full"
+                maxLength={15}
               />
             </div>
 
