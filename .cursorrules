@@ -1,0 +1,191 @@
+# Regras do Cursor para o Projeto Hipocampo
+
+## Visão Geral do Projeto
+Este é o projeto Hipocampo, uma aplicação de chat inteligente construída com React que integra com as APIs da Automagik. O projeto utiliza React 19.1.0, Vite, Tailwind CSS, shadcn/ui e hooks customizados para gerenciamento de estado.
+
+## Tecnologias e Dependências
+- React 19.1.0 com hooks modernos
+- Vite como bundler e dev server
+- Tailwind CSS 4.1.7 para estilização
+- shadcn/ui para componentes de interface
+- Lucide React para ícones
+- pnpm como gerenciador de pacotes
+
+## Estrutura do Projeto
+```
+src/
+├── components/          # Componentes React reutilizáveis
+│   ├── ui/             # Componentes shadcn/ui
+│   ├── ChatInterface.jsx
+│   ├── UserRegistration.jsx
+│   └── LoginForm.jsx
+├── hooks/              # Hooks customizados
+│   ├── useChat.js
+│   └── useLocalStorage.js
+├── lib/                # Utilitários e configurações
+│   └── api.js
+├── assets/             # Recursos estáticos
+├── App.jsx             # Componente raiz
+├── App.css             # Estilos globais
+└── main.jsx            # Ponto de entrada
+```
+
+## Regras de Desenvolvimento
+
+### Componentes React
+- SEMPRE use PascalCase para nomes de componentes
+- SEMPRE importe React hooks no topo do arquivo
+- SEMPRE use arrow functions para componentes funcionais
+- SEMPRE exporte componentes como named exports: `export const ComponentName = () => {}`
+- SEMPRE use destructuring para props: `({ prop1, prop2 }) => {}`
+- SEMPRE organize imports: bibliotecas externas primeiro, depois internas
+- SEMPRE use JSX com className em vez de class
+- SEMPRE use fragmentos React (<>) quando não precisar de wrapper div
+
+### Hooks e Estado
+- SEMPRE use hooks customizados para lógica complexa
+- SEMPRE prefixe hooks customizados com "use": `useChat`, `useLocalStorage`
+- SEMPRE use useState para estado local simples
+- SEMPRE use useEffect com array de dependências correto
+- SEMPRE use useCallback para funções que são passadas como props
+- SEMPRE use useMemo para cálculos custosos
+- NUNCA mute estado diretamente, sempre use setState
+
+### Estilização
+- SEMPRE use Tailwind CSS para estilização
+- SEMPRE use classes utilitárias do Tailwind em vez de CSS customizado
+- SEMPRE use componentes shadcn/ui quando disponíveis
+- SEMPRE mantenha o import de './App.css' nos componentes principais
+- SEMPRE use design responsivo com classes sm:, md:, lg:, xl:
+- SEMPRE use dark mode classes quando apropriado
+- NUNCA escreva CSS inline, use classes Tailwind
+
+### API e Integração
+- SEMPRE use as funções do arquivo src/lib/api.js para chamadas de API
+- SEMPRE trate erros de API com try-catch
+- SEMPRE use async/await em vez de .then()/.catch()
+- SEMPRE valide dados antes de enviar para API
+- SEMPRE use variáveis de ambiente para configurações sensíveis
+- SEMPRE implemente loading states para operações assíncronas
+- NUNCA exponha chaves de API no código frontend
+
+### Tratamento de Erros
+- SEMPRE implemente tratamento de erro em todas as operações assíncronas
+- SEMPRE exiba mensagens de erro amigáveis para o usuário
+- SEMPRE use console.error para logging de erros
+- SEMPRE forneça fallbacks para estados de erro
+- SEMPRE use componentes de Alert para exibir erros
+
+### Performance
+- SEMPRE use lazy loading para componentes grandes
+- SEMPRE otimize re-renderizações com React.memo quando necessário
+- SEMPRE use debouncing para inputs que fazem chamadas de API
+- SEMPRE minimize o bundle size evitando imports desnecessários
+- NUNCA faça chamadas de API desnecessárias
+
+### Acessibilidade
+- SEMPRE use elementos semânticos HTML apropriados
+- SEMPRE inclua atributos alt em imagens
+- SEMPRE use labels apropriados em formulários
+- SEMPRE garanta navegação por teclado
+- SEMPRE mantenha contraste adequado de cores
+- SEMPRE use atributos ARIA quando necessário
+
+### Nomenclatura
+- SEMPRE use camelCase para variáveis e funções
+- SEMPRE use PascalCase para componentes
+- SEMPRE use nomes descritivos e claros
+- SEMPRE prefixe handlers de eventos com "handle": `handleSubmit`, `handleClick`
+- SEMPRE use verbos para funções: `sendMessage`, `createUser`
+- SEMPRE use substantivos para variáveis: `isLoading`, `userData`
+
+### Estrutura de Arquivos
+- SEMPRE coloque componentes reutilizáveis em src/components/
+- SEMPRE coloque hooks customizados em src/hooks/
+- SEMPRE coloque utilitários em src/lib/
+- SEMPRE coloque assets estáticos em src/assets/
+- SEMPRE use extensão .jsx para componentes React
+- SEMPRE use extensão .js para utilitários e hooks
+
+### Imports e Exports
+- SEMPRE use imports absolutos com @ para src/: `@/components/ui/button.jsx`
+- SEMPRE ordene imports: React primeiro, bibliotecas externas, depois internas
+- SEMPRE use named exports para componentes
+- SEMPRE use default exports apenas para o componente principal do arquivo
+- SEMPRE agrupe imports relacionados
+
+### Formulários
+- SEMPRE use controlled components para inputs
+- SEMPRE valide dados no frontend antes de enviar
+- SEMPRE desabilite botões de submit durante loading
+- SEMPRE forneça feedback visual para estados de formulário
+- SEMPRE use tipos apropriados para inputs: email, tel, password
+- SEMPRE implemente acessibilidade em formulários
+
+### Estado Local vs Global
+- SEMPRE use useState para estado específico do componente
+- SEMPRE use hooks customizados para lógica compartilhada
+- SEMPRE use localStorage através do hook useLocalStorage
+- NUNCA passe estado desnecessariamente através de props
+- SEMPRE mantenha estado o mais próximo possível de onde é usado
+
+### Testes (quando implementar)
+- SEMPRE escreva testes para hooks customizados
+- SEMPRE teste componentes críticos
+- SEMPRE teste fluxos de usuário importantes
+- SEMPRE use React Testing Library
+- SEMPRE mocke chamadas de API em testes
+
+### Documentação
+- SEMPRE documente hooks customizados complexos
+- SEMPRE adicione comentários para lógica não óbvia
+- SEMPRE mantenha README atualizado
+- SEMPRE documente mudanças na API
+- SEMPRE use JSDoc para funções complexas
+
+### Git e Versionamento
+- SEMPRE use commits semânticos: feat:, fix:, docs:, style:, refactor:
+- SEMPRE escreva mensagens de commit descritivas
+- SEMPRE revise código antes de fazer merge
+- SEMPRE mantenha branches atualizadas
+- NUNCA commite código que quebra a build
+
+## Padrões Específicos do Projeto
+
+### Integração com Automagik API
+- SEMPRE use as funções createUser, runHipocampusAgent, continueConversation
+- SEMPRE passe session_id para manter continuidade da conversa
+- SEMPRE trate erros específicos da API Automagik
+- SEMPRE use o hook useChat para gerenciar conversas
+
+### Gerenciamento de Usuário
+- SEMPRE salve dados do usuário no localStorage
+- SEMPRE valide telefone e nome antes de criar usuário
+- SEMPRE limpe dados ao fazer logout
+- SEMPRE verifique se usuário existe antes de tentar login
+
+### Interface de Chat
+- SEMPRE auto-scroll para última mensagem
+- SEMPRE mostre indicador de typing
+- SEMPRE diferencie visualmente mensagens do usuário e do agente
+- SEMPRE implemente timestamps nas mensagens
+- SEMPRE permita limpeza do chat
+
+### Responsividade
+- SEMPRE teste em dispositivos móveis
+- SEMPRE use breakpoints do Tailwind
+- SEMPRE garanta que chat funcione bem em telas pequenas
+- SEMPRE otimize para touch interactions
+
+## Comandos Importantes
+- `pnpm run dev --host` - Inicia servidor de desenvolvimento
+- `pnpm run build` - Gera build de produção
+- `pnpm run preview` - Preview do build de produção
+- `pnpm run lint` - Executa linting
+
+## Variáveis de Ambiente Necessárias
+- `REACT_APP_AUTOMAGIK_API_KEY` - Chave da API Automagik
+- `REACT_APP_API_BASE_URL` - URL base da API (opcional)
+
+Siga estas regras rigorosamente para manter a qualidade e consistência do código no projeto Hipocampo.
+
